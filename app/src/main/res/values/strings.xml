@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Bin_proj</string>
+    <string name="logo_name">Check BIN</string>
+    <string name="hint_search">Enter the first 6 digits of your bank card (BIN)</string>
+    <string name="btn_search">SEARCH</string>
+    <string name="no_user_input">You must enter 6 digits!</string>
+
+</resources>
