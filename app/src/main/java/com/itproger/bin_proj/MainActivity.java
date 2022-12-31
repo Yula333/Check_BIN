@@ -1,13 +1,17 @@
 package com.itproger.bin_proj;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,11 +33,18 @@ public class MainActivity extends AppCompatActivity {
     private Button search_btn;
     private TextView result_info;
 
+    private DataBase dataBase;
+    private ListView listView;
+    private ArrayAdapter<String> arrayAdapter;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dataBase = new DataBase(this);
+        listView = findViewById(R.id.requests_list);
 
         search_text = findViewById(R.id.search_text);
         search_btn = findViewById(R.id.search_btn);
@@ -51,6 +63,20 @@ public class MainActivity extends AppCompatActivity {
                }
            }
        });
+
+        loadAllRequests();
+    }
+
+    private void loadAllRequests() {
+        ArrayList<String> allRequests = dataBase.getAllRequests();
+        if(arrayAdapter == null){
+            arrayAdapter = new ArrayAdapter<String>(this, R.layout.item, R.id.result_info, allRequests);
+            listView.setAdapter(arrayAdapter);
+        } else {
+            arrayAdapter.clear();
+            arrayAdapter.addAll(allRequests);
+            arrayAdapter.notifyDataSetChanged();
+        }
     }
 
     private class GetURLData extends AsyncTask<String, String, String> {
@@ -100,13 +126,16 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-                    result_info.setText(search_text.getText().toString()
-                            + "\nSCHEME / NETWORK: " + jsonObject.getString("scheme")
-                            + "\nTYPE : " +  jsonObject.getString("type")
-                            + "\nBRAND : " + jsonObject.getString("brand")
-                            + "\nCOUNTRY : " + jsonObject.getJSONObject("country").getString("name")
-                            + "\nBANK: " + jsonObject.getJSONObject("bank").getString("name")
-                    );
+//                    String res = search_text.getText().toString()
+//                            + "\nSCHEME / NETWORK: " + jsonObject.getString("scheme")
+//                            + "\nTYPE : " +  jsonObject.getString("type")
+//                            + "\nBRAND : " + jsonObject.getString("brand")
+//                            + "\nCOUNTRY : " + jsonObject.getJSONObject("country").getString("name")
+//                            + "\nBANK: " + jsonObject.getJSONObject("bank").getString("name");
+
+                    dataBase.insertData(search_text.getText().toString(),jsonObject.getString("scheme"),jsonObject.getString("type"),
+                            jsonObject.getString("brand"),jsonObject.getJSONObject("country").getString("name"),jsonObject.getJSONObject("bank").getString("name"));
+                    loadAllRequests();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
