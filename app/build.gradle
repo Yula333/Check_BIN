@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.itproger.bin_proj'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.itproger.bin_proj"
         minSdk 18
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 

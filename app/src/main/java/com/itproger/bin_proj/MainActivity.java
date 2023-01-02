@@ -1,19 +1,18 @@
 package com.itproger.bin_proj;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayAdapter<String> arrayAdapter;
 
+//    private final String TAG = "DEV";
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +52,18 @@ public class MainActivity extends AppCompatActivity {
         result_info = findViewById(R.id.result_info);
 
         search_btn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               if((search_text.getText().toString().equals("")) || (search_text.getText().toString().length()<6))
-                   Toast.makeText(MainActivity.this, R.string.no_user_input, Toast.LENGTH_SHORT).show();
-               else{
-                   String text = search_text.getText().toString();
-                   String url ="https://lookup.binlist.net/"+text;
+            @Override
+            public void onClick(View view) {
+                if((search_text.getText().toString().equals("")) || (search_text.getText().toString().length()<6))
+                    Toast.makeText(MainActivity.this, R.string.no_user_input, Toast.LENGTH_SHORT).show();
+                else{
+                    String text = search_text.getText().toString();
+                    String url ="https://lookup.binlist.net/"+text;
 
-                   new GetURLData().execute(url);
-               }
-           }
-       });
+                    new GetURLData().execute(url);
+                }
+            }
+        });
 
         loadAllRequests();
     }
@@ -112,33 +113,43 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if (reader != null)
                         reader.close();
-                    } catch(IOException e){
-                        e.printStackTrace();
-                    }
-                }
-            return null;
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            protected void onPostExecute(String result){
-            super.onPostExecute(result);
-
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-//                    String res = search_text.getText().toString()
-//                            + "\nSCHEME / NETWORK: " + jsonObject.getString("scheme")
-//                            + "\nTYPE : " +  jsonObject.getString("type")
-//                            + "\nBRAND : " + jsonObject.getString("brand")
-//                            + "\nCOUNTRY : " + jsonObject.getJSONObject("country").getString("name")
-//                            + "\nBANK: " + jsonObject.getJSONObject("bank").getString("name");
-
-                    dataBase.insertData(search_text.getText().toString(),jsonObject.getString("scheme"),jsonObject.getString("type"),
-                            jsonObject.getString("brand"),jsonObject.getJSONObject("country").getString("name"),jsonObject.getJSONObject("bank").getString("name"));
-                    loadAllRequests();
-                } catch (JSONException e) {
+                } catch(IOException e){
                     e.printStackTrace();
                 }
+            }
+            return null;
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+
+            String check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_url, bank_phone, bank_city = "";
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+
+                check_BIN = search_text.getText().toString();
+            // Считываем значения JSON, проверяем если не пустые, для сохранения в БД
+                scheme = jsonObject.optString("scheme").equals("") ? " - " : jsonObject.optString("scheme");
+                type  = jsonObject.optString("type").equals("") ? " - " : jsonObject.optString("type");
+            // Log.i(TAG, type);
+                brand = jsonObject.optString("brand").equals("") ? " - " : jsonObject.optString("brand");
+            // Log.i(TAG, brand);
+                country_alpha2 = jsonObject.getJSONObject("country").optString("alpha2").equals("") ? " - " : jsonObject.getJSONObject("country").optString("alpha2");
+                country_name = jsonObject.getJSONObject("country").optString("name").equals("") ? " - " : jsonObject.getJSONObject("country").optString("name");
+                bank_name = jsonObject.getJSONObject("bank").optString("name").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("name");;
+                bank_city = jsonObject.getJSONObject("bank").optString("city").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("city");
+                bank_url = jsonObject.getJSONObject("bank").optString("url").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("url");
+                bank_phone = jsonObject.getJSONObject("bank").optString("phone").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("phone");
+
+            // Добавляем значения в БД
+                dataBase.insertData(check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_city, bank_url, bank_phone);
+
+                loadAllRequests();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
