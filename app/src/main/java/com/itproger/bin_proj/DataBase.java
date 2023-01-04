@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DataBase extends SQLiteOpenHelper {
 
@@ -27,6 +29,7 @@ public class DataBase extends SQLiteOpenHelper {
     private static final String db_column8 = "bank_city";
     private static final String db_column9 = "bank_url";
     private static final String db_column10 = "bank_phone";
+    private static final String db_column11 = "time";
 
     public DataBase(@Nullable Context context) {
         super(context, db_name, null, db_version);
@@ -35,8 +38,8 @@ public class DataBase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = String.format("CREATE TABLE %s (ID INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT NOT NULL, " +
-                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT);",
-                db_table, db_column1, db_column2, db_column3, db_column4, db_column5, db_column6, db_column7, db_column8, db_column9, db_column10);
+                        "%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT);",
+                db_table, db_column1, db_column2, db_column3, db_column4, db_column5, db_column6, db_column7, db_column8, db_column9, db_column10, db_column11);
 
         db.execSQL(query);
     }
@@ -48,7 +51,7 @@ public class DataBase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertData(String search, String scheme, String type, String brand, String country_alpha2, String country_name, String bank_name, String bank_city, String bank_url, String bank_phone){
+    public void insertData(String search, String scheme, String type, String brand, String country_alpha2, String country_name, String bank_name, String bank_city, String bank_url, String bank_phone, String time){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(db_column1, search);
@@ -61,13 +64,14 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(db_column8, bank_city);
         values.put(db_column9, bank_url);
         values.put(db_column10, bank_phone);
+        values.put(db_column11, time);
         db.insertWithOnConflict(db_table, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public ArrayList<String>getAllRequests(){
         ArrayList<String> allRequests = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(db_table, new String[] {db_column1, db_column2, db_column3, db_column4, db_column5, db_column6, db_column7, db_column8, db_column9, db_column10}, null, null, null, null, null);
+        Cursor cursor = db.query(db_table, new String[] {db_column1, db_column2, db_column3, db_column4, db_column5, db_column6, db_column7, db_column8, db_column9, db_column10, db_column11}, null, null, null, null, null);
         while(cursor.moveToNext()){
             int index1 = cursor.getColumnIndex(db_column1);
             int index2= cursor.getColumnIndex(db_column2);
@@ -79,11 +83,13 @@ public class DataBase extends SQLiteOpenHelper {
             int index8 = cursor.getColumnIndex(db_column8);
             int index9 = cursor.getColumnIndex(db_column9);
             int index10 = cursor.getColumnIndex(db_column10);
+            int index11 = cursor.getColumnIndex(db_column11);
             allRequests.add("BIN/IIN: " + cursor.getString(index1) + "\nSCHEME / NETWORK: " + cursor.getString(index2)
                     + "\nTYPE : " + cursor.getString(index3) + "\nBRAND : " + cursor.getString(index4)
                     + "\nCOUNTRY : " + cursor.getString(index5) + " " + cursor.getString(index6)
-                    + "\nBANK : " + cursor.getString(index7) + ", " + cursor.getString(index8) + "\n" + cursor.getString(index9) + "\n" + cursor.getString(index10));
+                    + "\nBANK : " + cursor.getString(index7) + ", " + cursor.getString(index8) + "\n" + cursor.getString(index9) + "\n" + cursor.getString(index10) + "\n\n         " + cursor.getString(index11));
         }
+        Collections.reverse(allRequests);
         cursor.close();
         db.close();
         return allRequests;
