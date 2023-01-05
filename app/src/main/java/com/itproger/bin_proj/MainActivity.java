@@ -37,7 +37,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    Dialog dialog;
     private EditText search_text;
     private Button search_btn;
     private TextView result_info;
@@ -45,12 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView scheme_BIN;
     private TextView type_BIN;
     private TextView brand_BIN;
+    private TextView country_alpha2_BIN;
     private TextView country_BIN;
     private TextView bank_name_BIN;
     private TextView bank_city_BIN;
     private TextView bank_url_BIN;
     private TextView bank_phone_BIN;
-    private Button back_button;
 
     private DataBase dataBase;
     private ListView listView;
@@ -85,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     new GetURLData().execute(url);
                 }
 
+                Log.i(TAG, dataBase.getRequest().getScheme()+dataBase.getRequest().getCountry_name()+"*********\n**********");
                 //Получаем вид с файла preview_dialog.xml, который применим для диалогового окна:
                 LayoutInflater li = LayoutInflater.from(context);
                 View prev_dialog = li.inflate(R.layout.preview_dialog, null);
@@ -94,22 +94,26 @@ public class MainActivity extends AppCompatActivity {
                 mDialogBuilder.setView(prev_dialog);
                 //Настраиваем отображение поля для ввода текста в открытом диалоге:
 
-
-//                Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-//                @SuppressLint("SimpleDateFormat") String time = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
-
                 search_BIN = prev_dialog.findViewById(R.id.search_BIN);
                 search_BIN.setText(search_text.getText());
-//                scheme_BIN = prev_dialog.findViewById(R.id.scheme_BIN);
-//                scheme_BIN.setText();
-//      scheme_BIN = findViewById(R.id.scheme_BIN);
-//        type_BIN = findViewById(R.id.type_BIN);
-//        brand_BIN = findViewById(R.id.brand_BIN);
-//        country_BIN = findViewById(R.id.country_BIN);
-//        bank_name_BIN = findViewById(R.id.bank_name_BIN);
-//        bank_city_BIN = findViewById(R.id.bank_city_BIN);
-//        bank_url_BIN = findViewById(R.id.bank_url_BIN);
-//        bank_phone_BIN = findViewById(R.id.bank_phone_BIN);
+                scheme_BIN = prev_dialog.findViewById(R.id.scheme_BIN);
+                scheme_BIN.setText(dataBase.getRequest().getScheme());
+                type_BIN = prev_dialog.findViewById(R.id.type_BIN);
+                type_BIN.setText(dataBase.getRequest().getType());
+                brand_BIN =  prev_dialog.findViewById(R.id.brand_BIN);
+                brand_BIN.setText(dataBase.getRequest().getBrand());
+                country_alpha2_BIN = prev_dialog.findViewById(R.id.country_alpha2_BIN);
+                country_alpha2_BIN.setText(dataBase.getRequest().getCountry_alpha2());
+                country_BIN =  prev_dialog.findViewById(R.id.country_BIN);
+                country_BIN.setText(dataBase.getRequest().getCountry_name());
+                bank_name_BIN =  prev_dialog.findViewById(R.id.bank_name_BIN);
+                bank_name_BIN.setText(dataBase.getRequest().getBank_name());
+                bank_city_BIN =  prev_dialog.findViewById(R.id.bank_city_BIN);
+                bank_city_BIN.setText(dataBase.getRequest().getBank_city());
+                bank_url_BIN =  prev_dialog.findViewById(R.id.bank_url_BIN);
+                bank_url_BIN.setText(dataBase.getRequest().getBank_url());
+                bank_phone_BIN =  prev_dialog.findViewById(R.id.bank_phone_BIN);
+                bank_phone_BIN.setText(dataBase.getRequest().getBank_phone());
 
                 mDialogBuilder.setNegativeButton("OK",
                         new DialogInterface.OnClickListener() {
@@ -124,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-
         loadAllRequests();
     }
 
@@ -140,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetURLData extends AsyncTask<String, String, String> {
 
         @Override
@@ -180,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-
         String check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_url, bank_phone, bank_city, time;
 
         @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
@@ -188,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
 
-//            String check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_url, bank_phone, bank_city = "";
             try {
                 JSONObject jsonObject = new JSONObject(result);
 
@@ -210,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
 
                 // Добавляем значения в БД
                 dataBase.insertData(check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_city, bank_url, bank_phone, time);
-
                 loadAllRequests();
             } catch (JSONException e) {
                 e.printStackTrace();
