@@ -50,9 +50,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView bank_city_BIN;
     private TextView bank_url_BIN;
     private TextView bank_phone_BIN;
-
-    private DataBase dataBase;
     private ListView listView;
+
+    final Context context = this;
+    private DataBase dataBase;
     private ArrayAdapter<String> arrayAdapter;
 
     private final String TAG = "DEV";
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
         search_btn = findViewById(R.id.search_btn);
         result_info = findViewById(R.id.result_info);
 
-        final Context context = this;
-
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,49 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
                     new GetURLData().execute(url);
                 }
-
-                Log.i(TAG, dataBase.getRequest().getScheme()+dataBase.getRequest().getCountry_name()+"*********\n**********");
-                //Получаем вид с файла preview_dialog.xml, который применим для диалогового окна:
-                LayoutInflater li = LayoutInflater.from(context);
-                View prev_dialog = li.inflate(R.layout.preview_dialog, null);
-                //Создаем AlertDialog
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                //Настраиваем preview_dialog.xml для нашего AlertDialog:
-                mDialogBuilder.setView(prev_dialog);
-                //Настраиваем отображение поля для ввода текста в открытом диалоге:
-
-                search_BIN = prev_dialog.findViewById(R.id.search_BIN);
-                search_BIN.setText(search_text.getText());
-                scheme_BIN = prev_dialog.findViewById(R.id.scheme_BIN);
-                scheme_BIN.setText(dataBase.getRequest().getScheme());
-                type_BIN = prev_dialog.findViewById(R.id.type_BIN);
-                type_BIN.setText(dataBase.getRequest().getType());
-                brand_BIN =  prev_dialog.findViewById(R.id.brand_BIN);
-                brand_BIN.setText(dataBase.getRequest().getBrand());
-                country_alpha2_BIN = prev_dialog.findViewById(R.id.country_alpha2_BIN);
-                country_alpha2_BIN.setText(dataBase.getRequest().getCountry_alpha2());
-                country_BIN =  prev_dialog.findViewById(R.id.country_BIN);
-                country_BIN.setText(dataBase.getRequest().getCountry_name());
-                bank_name_BIN =  prev_dialog.findViewById(R.id.bank_name_BIN);
-                bank_name_BIN.setText(dataBase.getRequest().getBank_name());
-                bank_city_BIN =  prev_dialog.findViewById(R.id.bank_city_BIN);
-                bank_city_BIN.setText(dataBase.getRequest().getBank_city());
-                bank_url_BIN =  prev_dialog.findViewById(R.id.bank_url_BIN);
-                bank_url_BIN.setText(dataBase.getRequest().getBank_url());
-                bank_phone_BIN =  prev_dialog.findViewById(R.id.bank_phone_BIN);
-                bank_phone_BIN.setText(dataBase.getRequest().getBank_phone());
-
-                mDialogBuilder.setNegativeButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                dialog.cancel();
-                            }
-                        });
-                //Создаем AlertDialog:
-                AlertDialog alertDialog = mDialogBuilder.create();
-
-                //и отображаем его:
-                alertDialog.show();
             }
         });
         loadAllRequests();
@@ -212,6 +168,48 @@ public class MainActivity extends AppCompatActivity {
 
                 // Добавляем значения в БД
                 dataBase.insertData(check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_city, bank_url, bank_phone, time);
+
+                //Получаем вид с файла preview_dialog.xml, который применим для диалогового окна:
+                LayoutInflater li = LayoutInflater.from(context);
+                View prev_dialog = li.inflate(R.layout.preview_dialog, null);
+                //Создаем AlertDialog
+                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+                //Настраиваем preview_dialog.xml для нашего AlertDialog:
+                mDialogBuilder.setView(prev_dialog);
+
+                search_BIN = prev_dialog.findViewById(R.id.search_BIN);
+                search_BIN.setText(search_text.getText());
+                scheme_BIN = prev_dialog.findViewById(R.id.scheme_BIN);
+                scheme_BIN.setText(dataBase.getRequest().getScheme());
+                type_BIN = prev_dialog.findViewById(R.id.type_BIN);
+                type_BIN.setText(dataBase.getRequest().getType());
+                brand_BIN =  prev_dialog.findViewById(R.id.brand_BIN);
+                brand_BIN.setText(dataBase.getRequest().getBrand());
+                country_alpha2_BIN = prev_dialog.findViewById(R.id.country_alpha2_BIN);
+                country_alpha2_BIN.setText(dataBase.getRequest().getCountry_alpha2());
+                country_BIN =  prev_dialog.findViewById(R.id.country_BIN);
+                country_BIN.setText(dataBase.getRequest().getCountry_name());
+                bank_name_BIN =  prev_dialog.findViewById(R.id.bank_name_BIN);
+                bank_name_BIN.setText(dataBase.getRequest().getBank_name());
+                bank_city_BIN =  prev_dialog.findViewById(R.id.bank_city_BIN);
+                bank_city_BIN.setText(dataBase.getRequest().getBank_city());
+                bank_url_BIN =  prev_dialog.findViewById(R.id.bank_url_BIN);
+                bank_url_BIN.setText(dataBase.getRequest().getBank_url());
+                bank_phone_BIN =  prev_dialog.findViewById(R.id.bank_phone_BIN);
+                bank_phone_BIN.setText(dataBase.getRequest().getBank_phone());
+
+                mDialogBuilder.setNegativeButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                //Создаем AlertDialog:
+                AlertDialog alertDialog = mDialogBuilder.create();
+                //и отображаем его:
+                alertDialog.show();
+
                 loadAllRequests();
             } catch (JSONException e) {
                 e.printStackTrace();
