@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -116,6 +114,21 @@ public class MainActivity extends AppCompatActivity {
         bank_url_BIN.setText(dataBase.getRequest().getBank_url());
         TextView bank_phone_BIN = prev_dialog.findViewById(R.id.bank_phone_BIN);
         bank_phone_BIN.setText(dataBase.getRequest().getBank_phone());
+
+        //Нажатие на название страны отправит пользователя в карту
+        country_BIN.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("QueryPermissionsNeeded")
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri adressUri = Uri.parse("geo:0,0")
+                        .buildUpon().appendQueryParameter("q", country_BIN.getText().toString()).build();
+                intent.setData(adressUri);
+                if(intent.resolveActivity(getPackageManager()) != null){
+                    startActivity(intent);
+                }
+            }
+        });
 
         mDialogBuilder.setNegativeButton("OK",
                 new DialogInterface.OnClickListener() {

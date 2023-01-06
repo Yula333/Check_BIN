@@ -26,6 +26,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
               tools:ignore="MissingConstraints" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -63,7 +65,7 @@
                     <TextView
                         android:id="@+id/type"
                         android:text="@string/type"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/result_text" />
 
                     <TextView
                         android:id="@+id/type_BIN"
@@ -82,7 +84,7 @@
                     <TextView
                         android:id="@+id/brand"
                         android:text="@string/brand"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/result_text" />
 
                     <TextView
                         android:id="@+id/brand_BIN"
@@ -100,7 +102,7 @@
                     <TextView
                         android:id="@+id/country"
                         android:text="@string/country"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/result_text" />
 
                     <TextView
                         android:id="@+id/country_BIN"
@@ -109,7 +111,9 @@
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         android:textAlignment="textStart"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        />
 
                 </TableRow>
 
@@ -120,7 +124,7 @@
                     <TextView
                         android:id="@+id/bank"
                         android:text="@string/bank"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/result_text" />
 
                     <TextView
                         android:id="@+id/bank_name_BIN"
@@ -143,8 +147,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
-
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        />
                 </TableRow>
 
                 <TableRow

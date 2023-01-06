@@ -16,6 +16,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Bin_proj"
         tools:targetApi="tiramisu">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -29,6 +30,10 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
     </application>
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
 
 </manifest>
