@@ -119,9 +119,9 @@ public class DataBase extends SQLiteOpenHelper {
             model_bin.setCountry_alpha2(cursor.getString(index5));
             model_bin.setCountry_name(cursor.getString(index6));
             model_bin.setBank_name(cursor.getString(index7));
-            model_bin.setBank_url(cursor.getString(index8));
-            model_bin.setBank_phone(cursor.getString(index9));
-            model_bin.setBank_city(cursor.getString(index10));
+            model_bin.setBank_city(cursor.getString(index8));
+            model_bin.setBank_url(cursor.getString(index9));
+            model_bin.setBank_phone(cursor.getString(index10));
             model_bin.setTime(cursor.getString(index11));
         }
         cursor.close();

@@ -1,13 +1,14 @@
 package com.itproger.bin_proj;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,7 +33,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,16 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText search_text;
     private Button search_btn;
     private TextView result_info;
-    private TextView search_BIN;
-    private TextView scheme_BIN;
-    private TextView type_BIN;
-    private TextView brand_BIN;
-    private TextView country_alpha2_BIN;
-    private TextView country_BIN;
-    private TextView bank_name_BIN;
-    private TextView bank_city_BIN;
-    private TextView bank_url_BIN;
-    private TextView bank_phone_BIN;
     private ListView listView;
 
     final Context context = this;
@@ -97,6 +87,47 @@ public class MainActivity extends AppCompatActivity {
             arrayAdapter.addAll(allRequests);
             arrayAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void showDialog(){
+        //Получаем вид с файла preview_dialog.xml, который применим для диалогового окна:
+        LayoutInflater li = LayoutInflater.from(context);
+        View prev_dialog = li.inflate(R.layout.preview_dialog, null);
+        //Создаем AlertDialog
+        AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+        //Настраиваем preview_dialog.xml для нашего AlertDialog:
+        mDialogBuilder.setView(prev_dialog);
+
+        TextView search_BIN = prev_dialog.findViewById(R.id.search_BIN);
+        search_BIN.setText(search_text.getText());
+        TextView scheme_BIN = prev_dialog.findViewById(R.id.scheme_BIN);
+        scheme_BIN.setText(dataBase.getRequest().getScheme());
+        TextView type_BIN = prev_dialog.findViewById(R.id.type_BIN);
+        type_BIN.setText(dataBase.getRequest().getType());
+        TextView brand_BIN = prev_dialog.findViewById(R.id.brand_BIN);
+        brand_BIN.setText(dataBase.getRequest().getBrand());
+        TextView country_BIN = prev_dialog.findViewById(R.id.country_BIN);
+        country_BIN.setText(dataBase.getRequest().getCountry_name());
+        TextView bank_name_BIN = prev_dialog.findViewById(R.id.bank_name_BIN);
+        bank_name_BIN.setText(dataBase.getRequest().getBank_name());
+        TextView bank_city_BIN = prev_dialog.findViewById(R.id.bank_city_BIN);
+        bank_city_BIN.setText(dataBase.getRequest().getBank_city());
+        TextView bank_url_BIN = prev_dialog.findViewById(R.id.bank_url_BIN);
+        bank_url_BIN.setText(dataBase.getRequest().getBank_url());
+        TextView bank_phone_BIN = prev_dialog.findViewById(R.id.bank_phone_BIN);
+        bank_phone_BIN.setText(dataBase.getRequest().getBank_phone());
+
+        mDialogBuilder.setNegativeButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        //Создаем AlertDialog:
+        AlertDialog alertDialog = mDialogBuilder.create();
+        //и отображаем его:
+        alertDialog.show();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -156,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                 type  = jsonObject.optString("type").equals("") ? " - " : jsonObject.optString("type");
             // Log.i(TAG, type);
                 brand = jsonObject.optString("brand").equals("") ? " - " : jsonObject.optString("brand");
-            // Log.i(TAG, brand);
                 country_alpha2 = jsonObject.getJSONObject("country").optString("alpha2").equals("") ? " - " : jsonObject.getJSONObject("country").optString("alpha2");
                 country_name = jsonObject.getJSONObject("country").optString("name").equals("") ? " - " : jsonObject.getJSONObject("country").optString("name");
                 bank_name = jsonObject.getJSONObject("bank").optString("name").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("name");;
@@ -164,52 +194,11 @@ public class MainActivity extends AppCompatActivity {
                 bank_url = jsonObject.getJSONObject("bank").optString("url").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("url");
                 bank_phone = jsonObject.getJSONObject("bank").optString("phone").equals("") ? " - " : jsonObject.getJSONObject("bank").optString("phone");
                 Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-                time = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(timestamp);
+                time = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(timestamp);
 
                 // Добавляем значения в БД
                 dataBase.insertData(check_BIN, scheme, type, brand, country_alpha2, country_name, bank_name, bank_city, bank_url, bank_phone, time);
-
-                //Получаем вид с файла preview_dialog.xml, который применим для диалогового окна:
-                LayoutInflater li = LayoutInflater.from(context);
-                View prev_dialog = li.inflate(R.layout.preview_dialog, null);
-                //Создаем AlertDialog
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                //Настраиваем preview_dialog.xml для нашего AlertDialog:
-                mDialogBuilder.setView(prev_dialog);
-
-                search_BIN = prev_dialog.findViewById(R.id.search_BIN);
-                search_BIN.setText(search_text.getText());
-                scheme_BIN = prev_dialog.findViewById(R.id.scheme_BIN);
-                scheme_BIN.setText(dataBase.getRequest().getScheme());
-                type_BIN = prev_dialog.findViewById(R.id.type_BIN);
-                type_BIN.setText(dataBase.getRequest().getType());
-                brand_BIN =  prev_dialog.findViewById(R.id.brand_BIN);
-                brand_BIN.setText(dataBase.getRequest().getBrand());
-                country_alpha2_BIN = prev_dialog.findViewById(R.id.country_alpha2_BIN);
-                country_alpha2_BIN.setText(dataBase.getRequest().getCountry_alpha2());
-                country_BIN =  prev_dialog.findViewById(R.id.country_BIN);
-                country_BIN.setText(dataBase.getRequest().getCountry_name());
-                bank_name_BIN =  prev_dialog.findViewById(R.id.bank_name_BIN);
-                bank_name_BIN.setText(dataBase.getRequest().getBank_name());
-                bank_city_BIN =  prev_dialog.findViewById(R.id.bank_city_BIN);
-                bank_city_BIN.setText(dataBase.getRequest().getBank_city());
-                bank_url_BIN =  prev_dialog.findViewById(R.id.bank_url_BIN);
-                bank_url_BIN.setText(dataBase.getRequest().getBank_url());
-                bank_phone_BIN =  prev_dialog.findViewById(R.id.bank_phone_BIN);
-                bank_phone_BIN.setText(dataBase.getRequest().getBank_phone());
-
-                mDialogBuilder.setNegativeButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                //Создаем AlertDialog:
-                AlertDialog alertDialog = mDialogBuilder.create();
-                //и отображаем его:
-                alertDialog.show();
-
+                showDialog();
                 loadAllRequests();
             } catch (JSONException e) {
                 e.printStackTrace();

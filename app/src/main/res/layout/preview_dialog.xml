@@ -17,8 +17,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp">
 
-
-
             <TextView
                 android:id="@+id/details"
                 android:layout_width="wrap_content"
@@ -52,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -105,19 +103,12 @@
                         android:textColor="@color/black" />
 
                     <TextView
-                        android:id="@+id/country_alpha2_BIN"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:textAlignment="center"
-                        android:textColor="@color/black" />
-                    <TextView
                         android:id="@+id/country_BIN"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAlignment="textStart"
+                        android:layout_marginStart="6dp"
                         android:layout_weight="1"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black" />
 
                 </TableRow>
@@ -152,6 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
+
                         android:textColor="@color/black" />
                 </TableRow>
 
@@ -167,7 +159,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        tools:ignore="UsingOnClickInXml"
+                        android:autoLink="web"
+                        android:linksClickable="true"/>
                 </TableRow>
 
                 <TableRow
